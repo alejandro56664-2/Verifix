@@ -5,8 +5,8 @@ Common parser stuff
 import re
 
 # clara lib imports
-from srcU.Helpers import Helper as H
-from srcU.ClaraP.model import Program, Function, Expr, Op, Var, Const, VAR_COND, VAR_RET
+from .common import UnknownLanguage
+from .model import Program, Function, Expr, Op, Var, Const, VAR_COND, VAR_RET
 
 
 class NotSupported(Exception):
@@ -33,11 +33,8 @@ class Parser(object):
     '''
     Common stuff for parser for any language
     '''
-    NOTOP = '!'
-    OROP = '||'
-    ANDOP = '&&'
 
-    def __init__(self, optifs=False, postprocess=True, nobcs=False,
+    def __init__(self, optifs=True, postprocess=True, nobcs=False,
                  slice=False):
         
         self.prog = Program()
@@ -51,7 +48,7 @@ class Parser(object):
         self.postproc = postprocess
         self.slice = slice
 
-        self.loops = [] # List of loop-locations: [(condloc, exitloc, nextloc), ...]
+        self.loops = []
 
         self.cnt = 0
 
@@ -242,13 +239,6 @@ class Parser(object):
         else:
             return True
 
-    def unprime(self):
-        for fnc in self.prog.fncs.values():
-            for loc in fnc.locexprs:
-                for var,expr in fnc.locexprs[loc]:
-                    expr.unprime()
-                    
-
     def postprocess(self):
 
         if not self.postproc:
@@ -259,8 +249,6 @@ class Parser(object):
             self.rmunreachlocs(fnc)
             self.ssa(fnc)
             self.rmtmp(fnc)
-
-        self.unprime()
 
     def visit(self, node, name=None):
 
@@ -446,19 +434,14 @@ class Parser(object):
                 name, self.getline(next)
             ))
             self.visit(next)
-        elif name == 'for':
-            # nextloc = None
-            # Add dummy nextLoc
-            nextloc = self.addloc("update of the '%s' loop at line %d" % (
-                name, self.getline(node)
-            ))
         else:
             nextloc = None
+
         # Add body with (new location)
         bodyloc = self.addloc("inside the body of the '%s' loop beginning at line %d" % (
             name, self.getline(body) or self.getline(node)
         ))
-        self.addloop(condloc, exitloc, nextloc)
+        self.addloop((condloc, exitloc, nextloc))
         if prebody:
             for x in prebody:
                 self.addexpr(*x)
@@ -527,25 +510,17 @@ class Parser(object):
         assert (self.fnc), 'No active fnc'
         return self.fnc.gettype(var) is not None
 
-    def addloop(self, condloc, exitloc, nextloc):
-        self.loops.append((condloc, exitloc, nextloc))
-        self.prog.addloop(self.fnc, self.loops)
+    def addloop(self, l):
+        self.loops.append(l)
 
     def poploop(self):
         return self.loops.pop()
 
     def lastloop(self):
-        return self.loops[-1] if len(self.loops) > 0 else None
+        return self.loops[-1] if len(self.loops) else None
 
     def isfncname(self, name):
         return name in self.fncs
-
-    def getline(self, node):
-        raise Exception('Override in child class')
-        return node.coord.line
-
-    def parse(self, code):
-        raise Exception('Override in child class')
 
     @classmethod
     def parse_code(cls, code, *args, **kwargs):
@@ -567,4 +542,4 @@ def addlangparser(lang, parser):
 def getlangparser(lang):
     if lang in PARSERS:
         return PARSERS[lang]
-    raise H.UnknownLanguage("No parser for language: '%s'" % (lang,))
+    raise UnknownLanguage("No parser for language: '%s'" % (lang,))

@@ -13,7 +13,8 @@ def compile_prog(codeText, fname='temp', debug=False, timeout=CF.timeout_compile
     open(fname_c, 'w').write(codeText)
 
     # Run Clang
-    cmd_list = ['clang', fname_c] + CF.ClangArgs + ['-o', fname_out]
+    cmd_list = ['clang-12', fname_c] + CF.ClangArgs + ['-o', fname_out]
+    print('running clang: ', ' '.join(cmd_list))
     success, outs = H.subprocess_run(cmd_list, 
         blame_str='Compilation', timeout=timeout, debug=debug, raiseExp=raiseExp)
 

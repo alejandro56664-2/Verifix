@@ -8,7 +8,7 @@ import timeout_decorator
 
 from joblib import Parallel, delayed
 
-from srcU.ClaraP import c_parser
+from srcU.ClaraP import c_parser, py_parser
 from srcU.Helpers import ConfigFile as CF, Helper as H
 from srcU.Verifix import Result
 from srcU.Verifix.Align import AlignPAA
@@ -62,7 +62,8 @@ def verify_repair(res: Result, ppa_li, debug=False):
 
 def parse_cfg(progName, codeText, isPrimed, cfg=None):
     if cfg is None:
-        prog = c_parser.CParser().parse_code(codeText)
+        # prog = c_parser.CParser().parse_code(codeText)
+        prog = py_parser.PyParser().parse_code(codeText)
         cfg = CFG.get_optCFG(prog,isPrimed=isPrimed)
     return cfg
 
