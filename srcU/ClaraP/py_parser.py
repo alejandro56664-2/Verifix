@@ -10,6 +10,7 @@ from itertools import chain
 # clara lib imports
 from .model import Var, Const, Op, Expr, VAR_RET, VAR_OUT
 from .parser import Parser, ParseError, addlangparser, NotSupported, ParseError
+from .translator_helper import convert
 
 
 class PyParser(Parser):
@@ -48,7 +49,6 @@ class PyParser(Parser):
             pyast = ast.parse(code, mode='exec')
         except (SyntaxError, IndentationError) as e:
             raise ParseError(str(e))
-        print('vamos a visit: ', pyast)
         self.visit(pyast)
 
     def visit_Module(self, node):
@@ -200,7 +200,7 @@ class PyParser(Parser):
                 node.value.__class__.__name__, node.lineno))
 
     def visit_BoolOp(self, node):
-        func = node.op.__class__.__name__
+        func = convert(node.op.__class__.__name__)
         val_model = list(map(self.visit_expr, node.values))
 
         expr = Op(func, val_model[0], val_model[1], line=val_model[1].line)
@@ -211,14 +211,14 @@ class PyParser(Parser):
         return expr
 
     def visit_BinOp(self, node):
-        func = node.op.__class__.__name__
+        func = convert(node.op.__class__.__name__)
         left = self.visit_expr(node.left)
         right = self.visit_expr(node.right)
 
         return Op(func, left, right, line=node.lineno)
 
     def visit_UnaryOp(self, node):
-        func = node.op.__class__.__name__
+        func = convert(node.op.__class__.__name__)
         operand = self.visit(node.operand)
 
         return Op(func, operand, line=node.lineno)
@@ -230,7 +230,7 @@ class PyParser(Parser):
         left = self.visit_expr(node.left)
         right = comps_model[0]
         op = ops_model[0]
-
+        op = convert(op)
         expr = Op(op, left, right, line=right.line)
 
         left = right
@@ -368,6 +368,8 @@ class PyParser(Parser):
         # if it is done with += instead of +, so hacking this distinction
         if op == 'Add':
             op = 'AssAdd'
+
+        op = convert(op)
         
         # Aug assign to a name
         if isinstance(node.target, ast.Name):

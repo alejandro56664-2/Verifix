@@ -187,6 +187,8 @@ def z3_op_unary(solver, op:model.Op, vari, isCorrect, ce_index:str):
         x = z3_gen_rational(solver, expr1, vari, isCorrect, ce_index=ce_index)
         return z3_abs(x)
 
+    elif op.name == 'len':
+        print("todo")
 
     raise_exceptionOp(op)
 

@@ -43,6 +43,9 @@ python3 -m main -m repair -pc data/examples/simple_correct.c -pi data/examples/s
 python3 -m main -m repair -pc data/examples/check_prime_correct.c -pi data/examples/check_prime_incorrect.c -tc data/examples/check_prime_tests/
 ```
 
+```
+python3 -m debugpy --listen 5678 main.py -m repair -pc data/uncode/examples/check_prime_correct.py -pi data/uncode/examples/check_prime_incorrect.py -tc data/uncode/examples/check_prime_test/ -debug t
+```
 
 ```
 python3 -m debugpy --listen 5678 main.py -m repair -pc data/uncode/examples/p7_calc_pi_reference.py -pi data/uncode/examples/p7_calc_pi_failed.py -tc data/uncode/examples/p7_calc_pi_test/ -debug t
