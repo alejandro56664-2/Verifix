@@ -11,8 +11,10 @@ equivalences = {
     'Add': '+',
     'Sub': '-',
     'Mult': '*',
+    'Div': '/',
     'AssAdd': '+=',
-    'MultAdd': '*S=',
+    'AssMult': '*=',
+    'AssDiv': '/=',
 }
 
 def convert(name):
