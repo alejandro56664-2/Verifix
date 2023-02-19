@@ -10,7 +10,9 @@ equivalences = {
     'Mod': '%',
     'Add': '+',
     'Sub': '-',
-    'AssAdd': '+='
+    'Mult': '*',
+    'AssAdd': '+=',
+    'MultAdd': '*S=',
 }
 
 def convert(name):
