@@ -14,6 +14,7 @@ equivalences = {
     'Sub': '-',
     'Mult': '*',
     'Div': '/',
+    'Pow': '**',
     'AssAdd': '+=',
     'AssMult': '*=',
     'AssDiv': '/=',
