@@ -20,6 +20,7 @@ equivalences = {
     'AssAdd': '+=',
     'AssMult': '*=',
     'AssDiv': '/=',
+    'In': 'in',
     'USub': '-'
 }
 
