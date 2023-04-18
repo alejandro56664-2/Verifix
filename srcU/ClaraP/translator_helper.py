@@ -15,6 +15,7 @@ equivalences = {
     'AssAdd': '+=',
     'AssMult': '*=',
     'AssDiv': '/=',
+    'USub': '-'
 }
 
 def convert(name):
