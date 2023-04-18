@@ -5,6 +5,7 @@ y habilitar el funcionamiento de Verifix con Python.
 equivalences = {
     'Eq': '==',
     'NotEq': '!=',
+    'Not': '!',
     'Lt': '<',
     'Gt': '>',
     'LtE': '<=',
