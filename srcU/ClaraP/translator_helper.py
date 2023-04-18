@@ -6,6 +6,8 @@ equivalences = {
     'Eq': '==',
     'NotEq': '!=',
     'Not': '!',
+    'And': 'and',
+    'Or': 'or',
     'Lt': '<',
     'Gt': '>',
     'LtE': '<=',
